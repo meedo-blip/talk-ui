@@ -19,6 +19,9 @@
   }
 }
 
+.use-bros-pops {
+  font-family: var(--font-bros-pops);
+}
 body {
   background: var(--background);
   color: var(--foreground);
