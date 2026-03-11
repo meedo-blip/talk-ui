@@ -1,3 +1,6 @@
+# Talk ui
+This the front end of the messaging app talk, the backend is [talk-server](https://github.com/meedo-blip/talk-server)
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
