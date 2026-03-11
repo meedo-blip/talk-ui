@@ -24,15 +24,20 @@ export default function AddServer({setAddingServer}: {setAddingServer: (value: b
             },
             body: JSON.stringify(server)
             })
-            setAddingServer(false)
-          }
+      setAddingServer(false)
+    }
       
     
 
   
     return (
-        <div className="flex flex-col absolute w-screen h-screen items-center justify-center bg-gray-500 opacity-50 z-10">
-          <div className="flex justify-evenly items-center w-[40%] h-[50%] p-8 bg-gray-800 p-8 rounded shadow-md">
+        <div className="flex flex-col absolute w-screen h-screen items-center justify-center bg-gray-600 opacity-50 z-10">
+          <div className="flex flex-col justify-evenly items-center w-[40%] h-[50%] p-8 bg-gray-800 rounded shadow-md">
+            <button onClick={() => setAddingServer(false)} className="self-end text-gray-400 hover:text-gray-200">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
             <header className="text-2xl font-bold text-gray-300 mb-4">Join or Create a Server</header>
             <div className="flex flex-col items-center justify-evenly">
                  <label className="text-gray-500 text-sm mb-2">Server Name:</label>

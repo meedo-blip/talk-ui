@@ -1,4 +1,4 @@
-import NextAuth, { Account, DefaultSession, ISODateString } from "next-auth";
+import NextAuth, { Account, DefaultSession, ISODateString, User } from "next-auth";
 
 declare module "next-auth" {
 
@@ -8,7 +8,7 @@ declare module "next-auth" {
       provider?: string | null;
       providerAccountId?: string | null
     } & DefaultSession["user"];
-    accessToken?: string;
+    springAccessToken?: string;
     expires: ISODateString;
   }
 
@@ -24,4 +24,12 @@ declare module "next-auth" {
     description?: string | null,
     image?: string | null
   } | null | never | undefined
+
+}
+
+export type Message = {
+  serverId: number;
+  sender: UserType;
+  content: string;
+  timestamp: string;
 }
