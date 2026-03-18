@@ -45,7 +45,7 @@ export default function ChatPage({ params }: { params: Usable<{
   }, [serverId]);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen overflow-hidden">
       {/* reuse sidebar */}
       <ServerList />
       <ChatRoom server={server} />

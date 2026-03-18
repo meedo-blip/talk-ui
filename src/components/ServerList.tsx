@@ -62,7 +62,7 @@ export default function ServerList() {
 
     setTimeout(() => {
       recieveServers()
-    }, 1000);
+    }, 200);
       
     }, [addingServer, servers.length])
 
@@ -74,7 +74,7 @@ export default function ServerList() {
         // Conditional class based on isOpen 
         // state to control width and visibility
         className={`bg-zinc-800 text-white 
-                    h-full transition-all 
+                    min-h-screen transition-all 
                     duration-300 z-10 
                     w-20`}>
         {/* Sidebar content */}

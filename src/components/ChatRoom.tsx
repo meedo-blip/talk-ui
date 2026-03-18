@@ -72,63 +72,49 @@ export default function ChatRoom({ server }: { server: any }) {
   };
 
   return (
-<div className="flex-1 flex flex-col">
-        <header className="z-2 bg-zinc-800 text-white p-4">
+    <div className="flex-1 flex flex-col">
+      <header className="z-2 bg-zinc-800 text-white p-4">
+        <span className="font-semibold">
+          {server ? server.name : `Server ${server?.id}`}
+        </span>
+      </header>
 
-          <span className="font-semibold">
-            {server ? server.name : `Server ${server?.id}`}
-          </span>
-        </header>
-        <main className=" z-[0] flex-1 p-4  bg-zinc-900 text-white">
-          {loading || loadingMessages ? (
-            <p>Loading chat…</p>
-          ) : messages.length > 0 ? (
-            <>
-            { /*<div 
-            style={{
-              scrollbarWidth: "none", // Firefox
-              msOverflowStyle: "none", // IE 10+ 
-            }}
-            id="message-list"
-              onScroll={(e) => {
-                console.log("Container scrolled:", e.currentTarget.scrollTop);
-            }}
-            className="absolute bottom-14 z-[1] max-h-[calc(100%-7.1rem)] w-[calc(100%-10rem)] overflow-y-auto bg-none text-sm text-gray-400">
-             */} <ScrollAnimation messages={messages} /> {/*}
-            </div> */}
-            </>
-          ) : (
-            <p className="text-gray-400">No messages yet.</p>
-          )}
-        </main>
-        <footer className="z-2 p-4 bg-zinc-800">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const form = e.target as HTMLFormElement;
-              const input = form.elements.namedItem("message") as HTMLInputElement;
-              const content = input.value.trim();
-              if (!content) return;
-              sendMessage(content);   
-        
-            }
-          }
-            className="flex"
+      <main className="z-[0] flex-1 flex flex-col min-h-0 overflow-hidden p-4 bg-zinc-900 text-white">
+        {loading || loadingMessages ? (
+          <p>Loading chat…</p>
+        ) : messages.length > 0 ? (
+          <ScrollAnimation messages={messages} />
+        ) : (
+          <p className="text-gray-400">No messages yet.</p>
+        )}
+      </main>
+
+      <footer className="z-2 p-4 bg-zinc-800">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const form = e.target as HTMLFormElement;
+            const input = form.elements.namedItem("message") as HTMLInputElement;
+            const content = input.value.trim();
+            if (!content) return;
+            sendMessage(content);
+            //input.value = "";
+          }}
+          className="flex"
+        >
+          <input
+            name="message"
+            className="flex-1 rounded px-2 py-1 text-black"
+            placeholder="Type a message..."
+          />
+          <button
+            type="submit"
+            className="ml-2 rounded bg-amber-500 px-4 py-1 text-black"
           >
-            <input
-              name="message"
-              className="flex-1 rounded px-2 py-1 text-black"
-              placeholder="Type a message..."
-            />
-            <button
-              type="submit"
-              className="ml-2 rounded bg-amber-500 px-4 py-1 text-black"
-            >
-              Send
-            </button>
-          </form>
-        </footer>
-      </div>
-    
+            Send
+          </button>
+        </form>
+      </footer>
+    </div>
   );
 }
