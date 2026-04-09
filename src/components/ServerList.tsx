@@ -60,11 +60,11 @@ export default function ServerList() {
   
       document.addEventListener('contextmenu', handleContextMenu);
 
-    setTimeout(() => {
-      recieveServers()
-    }, 200);
-      
-    }, [addingServer, servers.length])
+        recieveServers();
+        return () => {
+            document.removeEventListener('contextmenu', handleContextMenu);
+        };
+    }, [addingServer])
 
     
     return (

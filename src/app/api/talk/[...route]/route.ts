@@ -1,3 +1,4 @@
+import { NEXTAUTH_SECRET, toSpringUser } from "@/types/utils";
 import { sign } from "crypto";
 import { getToken } from "next-auth/jwt";
 import { signOut } from "next-auth/react";
@@ -14,7 +15,7 @@ export async function PUT(req: NextRequest) {
   try {
     const token = await getToken({
       req,
-      secret: process.env.NEXTAUTH_SECRET,
+      secret: NEXTAUTH_SECRET,
     });
 
     console.log("TOKEN:", token);
@@ -24,6 +25,8 @@ export async function PUT(req: NextRequest) {
     }
     
     const body = await req.json();
+
+    const user = toSpringUser(body);
 
     const routePath = req.url.split("/api/talk/")[1]; // Extract the path after /api/talk/
 
@@ -63,22 +66,31 @@ export async function POST(req: NextRequest) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    const body = await req.json();
-
     const routePath = req.url.split("/api/talk/")[1]; // Extract the path after /api/talk/
 
     console.log("ROUTE PATH:", routePath);
 
+    let body: any = null;
+    let fetchOptions: RequestInit = {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token.springAccessToken}`,
+      },
+    };
+
+    if (!routePath.endsWith("/join")) {
+      body = await req.json();
+      const user = toSpringUser(body);
+      fetchOptions.headers = {
+        ...fetchOptions.headers,
+        "Content-Type": "application/json",
+      };
+      fetchOptions.body = JSON.stringify(body);
+    }
+
     const response = await fetch(
       `${process.env.TALK_SERVER_URL}/${routePath}`,
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token.springAccessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      }
+      fetchOptions
     );
 
     const data = await response.text();

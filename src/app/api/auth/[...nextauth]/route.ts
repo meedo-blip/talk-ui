@@ -1,4 +1,5 @@
-import NextAuth, { SessionStrategy } from "next-auth"
+import { NEXTAUTH_SECRET, toSpringUser } from "@/types/utils";
+import NextAuth, { SessionStrategy, SpringUser } from "next-auth"
 import { getToken } from "next-auth/jwt";
 import FacebookProvider from "next-auth/providers/facebook"
 import GithubProvider from "next-auth/providers/github";
@@ -17,6 +18,11 @@ export const authOptions = {
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID as string,
       clientSecret: process.env.GITHUB_APP_SECRET as string,
+      authorization: {
+        params: {
+          scope: 'read:user user:email',
+        },
+      },
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -59,7 +65,7 @@ export const authOptions = {
           body: JSON.stringify({
             provider: account.provider,
             providerId: account.providerAccountId,
-            email: profile?.email ,
+            email: profile?.email, // Optional - backend now uses provider+providerId as primary key
           }),
         }
       );
@@ -79,6 +85,23 @@ export const authOptions = {
       const data = JSON.parse(text);
 
       token.springAccessToken = data.token;
+
+      //console.log("jwt user: ", user);
+      if(isNewUser) {
+        const newUser: SpringUser = {provider: token.provider, providerAccountId: token.providerAccountId, email: profile?.email, details: {name: user?.name, image: user?.image}};
+        console.log("New user signed up with provider:", account.provider);
+            fetch("/api/talk/users", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json",
+              Authorization: `Bearer ${token.springAccessToken}`
+             },
+            body: JSON.stringify(newUser),
+          }).then((res) => {
+            if (res.status === 401) {
+              signOut({ callbackUrl: "/" });
+            }
+          });
+      }
 
     } catch (err) {
       console.error("JWT CALLBACK ERROR:", err);
@@ -103,6 +126,7 @@ export const authOptions = {
       }
 
       session.springAccessToken = token.springAccessToken;
+      session.user = toSpringUser(session.user);
 
       console.log("session: ", session);
 
@@ -115,9 +139,9 @@ export const authOptions = {
     strategy: "jwt" as SessionStrategy,
   },
   jwt: {
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: NEXTAUTH_SECRET,
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: NEXTAUTH_SECRET,
 
   encryption: false,
   // Enable debug with NEXTAUTH_DEBUG=true when troubleshooting
